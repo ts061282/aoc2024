@@ -14,6 +14,7 @@ for line in input:
 left.sort()
 right.sort()
 
+#iterate through the list(s), summing the product of the left Location ID with the count of that Location ID in the right list
 answer = 0
 for i in range(0,len(left)):
     answer += left[i] * right.count(left[i])
