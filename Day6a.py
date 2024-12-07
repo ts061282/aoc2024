@@ -1,6 +1,6 @@
 def turnFacing(facing = [-1,0]):
     if facing[0] == 0:
-        facing[0] = -1 * facing[1]
+        facing[0] = facing[1]
         facing[1] = 0
     else:
         facing[1] = -1 * facing[0]
@@ -8,7 +8,7 @@ def turnFacing(facing = [-1,0]):
     return facing
 
 import importer
-input = importer.parseInput(1)
+input = importer.parseInput(0)
 
 onMap = True
 path = []
@@ -22,17 +22,20 @@ for line in range(0,len(input)):
         next
 
 while onMap:
-    path.append(position)
-    if input[position[0]+facing[0]][position[1]+facing[1]] == '#':
-        facing = turnFacing(facing)
-    else:
+    if not position in path:
+        path.append(position)
+    try:
+        if input[position[0]+facing[0]][position[1]+facing[1]] == '#':
+            facing = turnFacing(facing)
+        else:
+            position = [position[0] + facing[0], position[1]+facing[1]]
+            if position[0] < 0 or position[0] >= len(input[0]) or position[1] < 0 or position[1] >= len(input):
+                onMap = False
+    except:
         position = [position[0] + facing[0], position[1]+facing[1]]
         if position[0] < 0 or position[0] >= len(input[0]) or position[1] < 0 or position[1] >= len(input):
             onMap = False
 
-answer = 0
-for n in range(0,len(path)):
-    if(path.pop not in path):
-        answer += 1
+answer = len(path)
 
 print(answer)
