@@ -14,18 +14,13 @@ for equation in equations:
     for parameter in range (len(equation[1])-1,-1,-1):
         for perm in range(0,len(permutations)):
             if str(parameters[parameter]) == str(permutations[perm])[-len(str(parameters[parameter])):] and parameters[parameter] != permutations[perm] and permutations[perm] >= 0:
-                if not int(str(permutations[perm])[:-len(str(parameters[parameter]))]) in permutations:
-                    permutations.append(int(str(permutations[perm])[:-len(str(parameters[parameter]))]))
+                permutations.append(int(str(permutations[perm])[:-len(str(parameters[parameter]))]))
             if permutations[perm] % parameters[parameter] == 0 and permutations[perm] != 0:
-                if not int(permutations[perm]/parameters[parameter]) in permutations:
-                    permutations.append(int(permutations[perm]/parameters[parameter]))
+                permutations.append(int(permutations[perm]/parameters[parameter]))
             permutations[perm] = permutations[perm]-parameters[parameter]
     for permutation in permutations:
         if permutation == 0:
             answer += equation[0]
-            #print(equation)
-            #print(permutation)
-            #print()
             break
 
 print(answer)
