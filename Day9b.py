@@ -1,44 +1,30 @@
-def updateFirstEmpty(blocks = [],firstEmptyBlock = 0):
-     for block in range(firstEmptyBlock+1,len(blocks)):
-          if blocks[block] == []:
-            return block
-          
-def updateLastData(blocks = [],lastDataBlock = 0):
-     for block in range(lastDataBlock-1,-1,-1):
-          if not blocks[block] == []:
-            return block
-
 import importer
 input = importer.parseInput(0)
 
-blocks = []
-even = True
-fileID = 0
-lastFileBlock = 0
+FAT = [] #sector, filename, filesize, checked?
+sector = 0
 for char in range(0,len(input[0])):
-    for block in range(0,int(input[0][char])):
-            if even:
-                blocks.append([fileID])
-                lastFileBlock = len(blocks)-1
-            else:
-                blocks.append([])
-    if even:
-         fileID += 1
-    even = not even
+   if char % 2 == 1:
+        sector += int(input[0][char])
+   else:
+      FAT += [[sector,int(char/2),int(input[0][char]),False]]
+      sector += int(input[0][char])
 
-lastDataBlock = len(blocks)
-lastDataBlock = updateLastData(blocks,lastDataBlock)
-firstEmptyBlock = 0
-firstEmptyBlock = updateFirstEmpty(blocks,firstEmptyBlock)
-while firstEmptyBlock < lastDataBlock:
-    blocks[firstEmptyBlock] = blocks[lastDataBlock]
-    blocks[lastDataBlock] = []
-    lastDataBlock = updateLastData(blocks,lastDataBlock)
-    firstEmptyBlock = updateFirstEmpty(blocks,firstEmptyBlock)
-
+file=len(FAT)-1
+while file >= 0:
+   if not FAT[file][3]:
+      FAT[file][3] = True
+      for gap in range(0,file):
+         if FAT[gap+1][0] - FAT[gap][0] - FAT[gap][2] >= FAT[file][2]:
+               FAT[file][0] = FAT[gap][0] + FAT[gap][2]
+               FAT = FAT[:gap+1] + [FAT[file]] + FAT[gap+1:file] + FAT[file+1:]
+               file += 1
+               break
+   file -= 1
+                
 answer = 0
-for block in range(0,len(blocks)):
-    if not blocks[block] == []:
-        answer += blocks[block][0] * block
+for file in FAT:
+   for block in range(file[0],file[0]+file[2]):
+      answer += block * file[1]
 
 print(answer)
